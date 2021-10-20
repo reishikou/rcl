@@ -331,9 +331,13 @@ rcl_take_response(
   const rcl_client_t * client,
   rmw_request_id_t * request_header,
   void * ros_response)
-{
+{ 
   rmw_service_info_t header;
   header.request_id = *request_header;
+  //rei
+  TRACEPOINT(client_response, client,
+             header.source_timestamp, header.received_timestamp);
+  //rei
   rcl_ret_t ret = rcl_take_response_with_info(client, &header, ros_response);
   *request_header = header.request_id;
   return ret;
