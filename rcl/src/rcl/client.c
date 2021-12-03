@@ -35,6 +35,8 @@ extern "C"
 
 #include "./common.h"
 
+#include "rcutils/time.h"
+
 typedef struct rcl_client_impl_t
 {
   rcl_client_options_t options;
@@ -302,9 +304,7 @@ rcl_take_response_with_info(
   const rcl_client_t * client,
   rmw_service_info_t * request_header,
   void * ros_response)
-{ //rei
-  TRACEPOINT(client_response, client, request_header->source_timestamp, request_header->received_timestamp);
-  //rei
+{ 
   RCUTILS_LOG_DEBUG_NAMED(ROS_PACKAGE_NAME, "Client taking service response");
   if (!rcl_client_is_valid(client)) {
     return RCL_RET_CLIENT_INVALID;  // error already set
@@ -318,7 +318,7 @@ rcl_take_response_with_info(
   request_header->received_timestamp = 0;
   if (rmw_take_response(
       client->impl->rmw_handle, request_header, ros_response, &taken) != RMW_RET_OK)
-  {
+  { 
     RCL_SET_ERROR_MSG(rmw_get_error_string().str);
     return RCL_RET_ERROR;
   }
@@ -339,6 +339,9 @@ rcl_take_response(
   rmw_service_info_t header;
   header.request_id = *request_header;
   rcl_ret_t ret = rcl_take_response_with_info(client, &header, ros_response);
+  //rei
+  TRACEPOINT(client_response, client, header.source_timestamp, header.received_timestamp);
+  //rei
   *request_header = header.request_id;
   return ret;
 }

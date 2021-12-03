@@ -294,9 +294,7 @@ rcl_take_request_with_info(
   const rcl_service_t * service,
   rmw_service_info_t * request_header,
   void * ros_request)
-{ //rei
-  TRACEPOINT(service_request, service, request_header->source_timestamp, request_header->received_timestamp);
-  //rei
+{ 
   RCUTILS_LOG_DEBUG_NAMED(ROS_PACKAGE_NAME, "Service server taking service request");
   if (!rcl_service_is_valid(service)) {
     return RCL_RET_SERVICE_INVALID;  // error already set
@@ -333,6 +331,9 @@ rcl_take_request(
   rmw_service_info_t header;
   header.request_id = *request_header;
   rcl_ret_t ret = rcl_take_request_with_info(service, &header, ros_request);
+  //rei
+  TRACEPOINT(service_request, service, header.source_timestamp, header.received_timestamp);
+  //rei
   *request_header = header.request_id;
   return ret;
 }
