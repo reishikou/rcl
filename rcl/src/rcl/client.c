@@ -208,7 +208,9 @@ rcl_client_get_rmw_handle(const rcl_client_t * client)
 
 rcl_ret_t
 rcl_send_request(const rcl_client_t * client, const void * ros_request, int64_t * sequence_number)
-{
+{ //rei
+  TRACEPOINT(client_request, client, ros_request);
+  //rei
   RCUTILS_LOG_DEBUG_NAMED(ROS_PACKAGE_NAME, "Client sending service request");
   if (!rcl_client_is_valid(client)) {
     return RCL_RET_CLIENT_INVALID;  // error already set
@@ -266,6 +268,9 @@ rcl_take_response(
   rmw_service_info_t header;
   header.request_id = *request_header;
   rcl_ret_t ret = rcl_take_response_with_info(client, &header, ros_response);
+  //rei
+  TRACEPOINT(client_response, client, header.source_timestamp, header.received_timestamp);
+  //rei
   *request_header = header.request_id;
   return ret;
 }

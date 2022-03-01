@@ -262,6 +262,9 @@ rcl_take_request(
   rmw_service_info_t header;
   header.request_id = *request_header;
   rcl_ret_t ret = rcl_take_request_with_info(service, &header, ros_request);
+  //rei
+  TRACEPOINT(service_request, service, header.source_timestamp, header.received_timestamp);
+  //rei
   *request_header = header.request_id;
   return ret;
 }
@@ -271,7 +274,9 @@ rcl_send_response(
   const rcl_service_t * service,
   rmw_request_id_t * request_header,
   void * ros_response)
-{
+{ //rei
+  TRACEPOINT(service_response, service, ros_response);
+  //rei
   RCUTILS_LOG_DEBUG_NAMED(ROS_PACKAGE_NAME, "Sending service response");
   if (!rcl_service_is_valid(service)) {
     return RCL_RET_SERVICE_INVALID;  // error already set
